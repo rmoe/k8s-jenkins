@@ -73,16 +73,56 @@ pipeline {
 }
 ```
 
-
 #### Adding additional containers
 
-Additional containers can be run ion the agent pod. In the pipeline above
+Additional containers can be run in the agent pod. In the pipeline above
 the first step of the 'Test' stage runs on a nodejs container.
 
 ![Additional container](images/new_container.png?raw=true)
 
 ### Building Docker images
-Docker images can be built as part of the build pipeline.
+Docker images can be built as part of the pipeline. The docker socket
+from the host needs to be shared with the agent containers by creating a
+host path volume.
+
+![Docker volume](images/docker_volume.png?raw=true)
+
+A new stage can then be added to the pipeline.
+
+```groovy
+stage('Build') {
+  steps {
+    container('build') {
+        sh 'apk update && apk install docker'
+        sh 'docker build -t application .'
+      }
+    }
+  }
+}
+```
 
 #### Pushing new images to IBM Container Registry
 
+Automatically pushing images to the IBM container registry requires an API key.
+
+```bash
+$ ibmcloud iam api-key-create
+```
+
+This API key can be passed into the pipeline via environment variables.
+In the container configuration add a new environment variable named
+`REGISTRY_TOKEN`.
+
+```groovy
+stage('Build') {
+  steps {
+    container('build') {
+        sh 'apk update && apk install docker'
+        sh 'docker login -u token -p ${REGISTRY_TOKEN} ng.registry.bluemix.net'
+        sh 'docker build -t application .'
+        sh 'docker tag ${IMAGE_REPO}/application application'
+      }
+    }
+  }
+}
+```
