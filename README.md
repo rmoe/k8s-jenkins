@@ -22,7 +22,7 @@ longer and try again.
 Prior to installing Jenkins a persistent volume must be created.
 
 ```bash
-$ kubectl apply -f volume.yaml`
+$ kubectl apply -f volume.yaml
 ```
 
 Now Jenkins can be installed using helm.
@@ -95,9 +95,10 @@ the first step of the 'Test' stage runs on a nodejs container.
 ![Additional container](images/new_container.png?raw=true)
 
 ### 5. Build Docker images
-Docker images can be built as part of the pipeline. The docker socket
-from the host needs to be shared with the agent containers by creating a
-host path volume.
+Docker images can be built as part of the pipeline. Create another container
+named 'build' using the alpine image.
+The docker socket from the host also needs to be shared with the agent
+containers by creating a host path volume.
 
 Volume configuration is under "Manage Jenkins" > "Configure Jenkins" > "Cloud".
 ![Docker volume](images/docker_volume.png?raw=true)
@@ -126,7 +127,8 @@ $ ibmcloud iam api-key-create
 
 This API key can be passed into the pipeline via environment variables.
 In the container configuration add a new environment variable named
-`REGISTRY_TOKEN`.
+`REGISTRY_TOKEN`. Update the build stage to log into the registry and
+push the image.
 
 ```groovy
 stage('Build') {
