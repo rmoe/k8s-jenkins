@@ -3,7 +3,7 @@
 ## Steps
 
 1. [Install Helm](#1-install-helm)
-2. [Instal Jenkins](#2-install-helm)
+2. [Install Jenkins](#2-install-jenkins)
 3. [Log into Jenkins](#3-log-into-jenkins)
 4. [Configure Jenkins](#4-configure-jenkins)
 5. [Build Docker Images](#5-build-docker-images)
